@@ -1,35 +1,68 @@
 package com.example.primeraAPI.controller;
 
 import com.example.primeraAPI.entities.Customer;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 @RestController
 public class CustomerController {
 
-    @GetMapping("/hello")
-    public String saludo() {
-        return "Helloooo";
+    private List<Customer> customerList = new ArrayList<>();
+
+    public CustomerController() {
+        Customer c1 = new Customer(1, "yamil", "moselli", "yamil@hotmail.com");
+        Customer c2 = new Customer(2, "john", "malkovich", "john@hotmail.com");
+        customerList.add(c1);
+        customerList.add(c2);
     }
 
-    @GetMapping("/hello2")
-    public String saludo2() {
-        return "Hello twooo";
+    @GetMapping("/customer/{id}")
+    public Customer getCustomer(@PathVariable int id) {
+        for (Customer v: customerList) {
+            if (v.getId() == id) {
+                return v;
+            }
+        }
+        return null;
     }
 
-    @GetMapping("/customers")
-    public Customer prueba() {
-        Customer c1 = new Customer("John", "Smith", "john.smith@gmail.com");
-        Customer c2 = new Customer("Jane", "Doe", "jane@doe.com");
+    @GetMapping("/customer")
+    public List<Customer> getAllCustomer() {
+        return customerList;
+    }
 
-        Customer[] customers = new Customer[2];
-        customers[0] = c1;
-        customers[1] = c2;
+    @PostMapping("/customer")
+    public void addCustomer(@RequestBody Customer c) {
+        customerList.add(c);
+    }
 
-        return customers[0];
+    @DeleteMapping("/customer/{id}")
+    public void deleteCustomer(@PathVariable int id) {
+        for (Customer v: customerList) {
+            if (v.getId() == id) {
+                customerList.remove(v);
+                break;
+            }
+        }
+    }
 
+    @PutMapping("/customer/{id}")
+    public void updateCustomer(@PathVariable int id, @RequestBody Customer c) {
+        for (Customer v: customerList) {
+            if (v.getId() == id) {
+                customerList.remove(v);
+                c.setId(id);
+                customerList.add(c);
+                break;
+            }
+        }
+    }
+
+    public List<Customer> searchCustomers() {
+        return null;
     }
 
 }
